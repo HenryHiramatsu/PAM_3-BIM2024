@@ -1,90 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'classes.dart';
 
-// Função para criar uma lista de widgets de imagens a partir de uma lista de URLs
-List<Widget> buildImageWidgets(List<String> imageUrls) {
-  return imageUrls.map((imageUrl) {
-    return Image.asset(imageUrl, fit: BoxFit.cover);
-  }).toList();
-}
-
-class TelaPraia extends StatelessWidget {
+class TelaPraia extends StatefulWidget {
   final String nomePraia;
-  final List<String> imagem; 
   final String descricao;
   final String localizacao;
+  final String imagem;
+  final Curiosidade curiosidade;
 
   TelaPraia({
     required this.nomePraia,
-    required this.imagem,
     required this.descricao,
     required this.localizacao,
+    required this.imagem,
+    required this.curiosidade,
   });
 
+  @override
+  _TelaPraiaState createState() => _TelaPraiaState();
+}
+
+class _TelaPraiaState extends State<TelaPraia> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(nomePraia),
-        backgroundColor: const Color.fromARGB(255, 90, 247, 231),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        title: Text(widget.nomePraia),
+        decoration: 
       ),
-      // body
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      body: Container(
+        color: Color(0xFFA9EAEF), // Cor de fundo da tela
+        child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CarouselSlider(
-                options: CarouselOptions(
-                  height: 400,
-                  aspectRatio: 9 / 16,
-                  enlargeCenterPage: true,
-                  autoPlay: false,
+            children: [
+              Image.asset(widget.imagem),
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white, // Fundo branco para o container
+                  borderRadius: BorderRadius.circular(12.0), // Bordas arredondadas
                 ),
-                items: buildImageWidgets(imagem), 
-              ),
-              const SizedBox(height: 20),
-              Center(
-                child: Text(
-                  nomePraia,
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Mali',
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                descricao,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Localização:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 200,
-                child: Image.network(
-                  localizacao,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  'copyright©2024 Guilherme e Henry',
-                  style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.nomePraia,
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      widget.descricao,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Localização: ${widget.localizacao}',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    SizedBox(height: 8.0),
+                    Text(
+                      'Curiosidade: ${widget.curiosidade.texto}', // Exibindo a curiosidade corretamente
+                      style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                    ),
+                  ],
                 ),
               ),
             ],

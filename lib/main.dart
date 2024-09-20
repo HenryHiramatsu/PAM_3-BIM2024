@@ -1,140 +1,127 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:seahint/TelaPraia.dart';
-import 'praias.dart';
+import 'telapraia.dart';
+import 'classes.dart'; // Importando as classes
+import 'Praias.dart';//Importando as instâncias das classes
+
+
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MaterialApp(
+    title: "App SeaHint",
+    home: MainApp(),
+  ));  
+  print(praiasSurf);
+  print(praiasBanho);
+  print(praiasTrilha);
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SeaHint',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        scaffoldBackgroundColor: Colors.lightBlueAccent[100],
-      ),
-      home: HomeScreen(),
-    );
-  }
+  MainAppState createState() => MainAppState();
 }
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
-
-  // Definição de três listas separadas para cada categoria de praia
-  final List<tipoPraia> praiaSurfing = [
-    
-  ];
-
-  final List<tipoPraia> praiaCaminhada = [
-    
-  ];
-
-  final List<tipoPraia> praiaBanho = [
-  ];
-
+class MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ranking SeaHint'),
+        title: const Text('SeaHint'),
         centerTitle: true,
-        backgroundColor: Colors.teal,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.menu),
-        ),
+        backgroundColor: Colors.blue.shade400,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const Text(
-                'Confira a seguir as melhores praias eleitas pelo SeaHint:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Melhores praias de surf',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              buildCarousel(context, praiaSurfing),
-              const SizedBox(height: 20),
-              const Text(
-                'Melhores praias de banho',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              buildCarousel(context, praiaBanho),
-              const SizedBox(height: 20),
-              const Text(
-                'Melhores praias de caminhada',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              buildCarousel(context, praiaCaminhada),
-              const SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  'copyright©2024 Guilherme e Henry',
-                  style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                ),
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            _buildCarouselSection('Melhores praias para surfing', praiasSurf),
+            _buildCarouselSection('Melhores praias para trilha', praiasTrilha),
+            _buildCarouselSection('Melhores praias de banho', praiasBanho),
+          ],
         ),
       ),
     );
   }
 
-  // Função para construir o carrossel
-  Widget buildCarousel(BuildContext context, List<tipoPraia> beaches) {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 400,
-        aspectRatio: 9 / 16,
-        enlargeCenterPage: true,
-        autoPlay: false,
-        autoPlayCurve: Curves.fastOutSlowIn,
-        viewportFraction: 0.8,
+  Widget _buildCarouselSection(String title, List<Praia> praias) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(
+            width: 1500, // Largura total do container
+            child: _buildCarousel(context, praias),
+          ),
+        ],
       ),
-      items: beaches.map((beach) => buildImageCard(context, TelaPraia as TelaPraia)).toList(),
     );
   }
 
-  // Função para construir os cartões de imagem
-  Widget buildImageCard(BuildContext context, TelaPraia beach) {
-    return GestureDetector(
+  Widget _buildCarousel(BuildContext context, List<Praia> praias) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.35, // Ajuste de altura do carrossel
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: praias.length,
+        itemBuilder: (context, index) {
+          return _buildCard(praias[index], context);
+        },
+      ),
+    );
+  }
+
+  Widget _buildCard(Praia praia, BuildContext context) {
+    return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => TelaPraia(
-              nomePraia: beach.nomePraia,
-              imagem: beach.imagem,
-              descricao: beach.descricao,
-              localizacao: beach.localizacao,
+              nomePraia: praia.tipo.nome,
+              descricao: praia.descricao,
+              localizacao: praia.localizacao,
+              imagem: praia.tipo.imagem,
+              curiosidade: praia.curiosidade,
             ),
           ),
         );
       },
       child: Container(
-        margin: const EdgeInsets.all(5.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          image: DecorationImage(
-            image: AssetImage(beach.imagem[0]), // Acessa a primeira imagem da lista
-            fit: BoxFit.cover,
+        width: MediaQuery.of(context).size.height * 0.33, // Ajustando a largura do card para caber nos 1500px
+        margin: const EdgeInsets.symmetric(horizontal: 10.0), // Espaço entre os cards
+        child: Card(
+          elevation: 4,
+          child: Column(
+            children: [
+              Expanded(
+                child: Image.asset(
+                  praia.tipo.imagem,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  praia.tipo.nome,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  praia.tipo.tipoPraia,
+                  style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
           ),
-          border: Border.all(color: Colors.black12),
         ),
       ),
     );
