@@ -1,3 +1,3 @@
-# seahint
+# SeaHint
 
-A new Flutter project.
+[Documentação do projeto](https://github.com/HenryHiramatsu/SeaHint-v.1.0.wiki.git)
