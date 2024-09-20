@@ -26,7 +26,6 @@ class _TelaPraiaState extends State<TelaPraia> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.nomePraia),
-        decoration: 
       ),
       body: Container(
         color: Color(0xFFA9EAEF), // Cor de fundo da tela
