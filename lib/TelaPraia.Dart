@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'classes.dart';
 
 class TelaPraia extends StatefulWidget {
@@ -17,10 +18,20 @@ class TelaPraia extends StatefulWidget {
   });
 
   @override
-  _TelaPraiaState createState() => _TelaPraiaState();
-}
+  _TelaPraiaState createState() => _TelaPraiaState();}
 
 class _TelaPraiaState extends State<TelaPraia> {
+
+  Future<void> _praiaGoogleMaps() async {
+    final Uri googleMapsUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=${widget.nomePraia}');
+    
+    if ( !await launchUrl(googleMapsUrl)) {
+      await launchUrl(googleMapsUrl);
+    } else {
+      throw 'Could not launch';
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,6 +73,14 @@ class _TelaPraiaState extends State<TelaPraia> {
                       'Curiosidade: ${widget.curiosidade.texto}', // Exibindo a curiosidade corretamente
                       style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
                     ),
+                                SizedBox(height: 20),
+                    ElevatedButton(
+                        onPressed: () {
+                        // Chama o método para abrir o Google Maps
+                        _praiaGoogleMaps();
+                      },
+                       child: Text('Ver no Google Maps'),
+                     ),
                   ],
                 ),
               ),
